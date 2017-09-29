@@ -3,9 +3,11 @@ import { IonicPage } from 'ionic-angular';
 
 @IonicPage()
 @Component({
-    selector: 'home',
-    templateUrl: 'home.html',
+  selector: 'page-set-location',
+  templateUrl: 'set-location.html',
 })
-export class HomePage {
-    addPlacePage = "AddPlacePage";
+export class SetLocationPage {
+
+
+
 }
