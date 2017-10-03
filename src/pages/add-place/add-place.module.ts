@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
 import { AddPlacePage } from './add-place';
-import { AgmCoreModule } from "angular2-google-maps/core";
+import { AgmCoreModule } from "@agm/core";
 
 @NgModule({
   declarations: [
