@@ -4,7 +4,10 @@ import { NgForm } from "@angular/forms";
 import { Location } from "../../models/location";
 import { Geolocation } from '@ionic-native/geolocation';
 import { Camera } from '@ionic-native/camera';
+import { File, Entry, FileError } from '@ionic-native/file';
 import { PlacesService } from "../../services/places";
+
+declare var cordova: any;
 
 @IonicPage()
 @Component({
@@ -22,7 +25,7 @@ export class AddPlacePage {
 
     constructor(private modalController: ModalController, private geolocation: Geolocation,
         private toastController: ToastController, private loadingController: LoadingController,
-        private camera: Camera, private placesService: PlacesService) { }
+        private camera: Camera, private file: File, private placesService: PlacesService) { }
 
     onOpenMap() {
         const modal = this.modalController.create("SetLocationPage", { location: this.location, isSet: this.locationIsSet });
@@ -68,11 +71,34 @@ export class AddPlacePage {
         })
             .then(
             imageData => {
+                const currentName = imageData.replace(/^.*[\\\/]/, '');
+                const path = imageData.replace(/[^\/]*$/, '');
+                const newFileName = new Date().getUTCMilliseconds() + ".jpg";
+                this.file.moveFile(path, currentName, cordova.file.dataDirectory, newFileName)
+                    .then(
+                    (data: Entry)=> {
+                        this.imgUrl = data.nativeURL;
+                        this.camera.cleanup();
+                    })
+                    .catch(
+                    (err: FileError) => {
+                        this.imgUrl = "";
+                        const toast = this.toastController.create({
+                            message: "Could not save the image. Please try again",
+                            duration: 2500
+                        });
+                        toast.present();
+                        this.camera.cleanup();
+                    });
                 this.imgUrl = imageData;
             })
             .catch(
               error => {
-                console.log(error);
+                  const toast = this.toastController.create({
+                      message: "Could not take the image. Please try again",
+                      duration: 2500
+                  });
+                  toast.present();
             });
     }
 
