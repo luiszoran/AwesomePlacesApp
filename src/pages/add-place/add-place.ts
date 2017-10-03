@@ -3,6 +3,8 @@ import { IonicPage, ModalController, ToastController, LoadingController } from '
 import { NgForm } from "@angular/forms";
 import { Location } from "../../models/location";
 import { Geolocation } from '@ionic-native/geolocation';
+import { Camera } from '@ionic-native/camera';
+import { PlacesService } from "../../services/places";
 
 @IonicPage()
 @Component({
@@ -16,10 +18,11 @@ export class AddPlacePage {
         lng: -73.9759827
     };
     locationIsSet = false;
+    imgUrl = "";
 
-    constructor(private modalController: ModalController, private geolocation: Geolocation, private toastController: ToastController, private loadingController: LoadingController) {
-
-    }
+    constructor(private modalController: ModalController, private geolocation: Geolocation,
+        private toastController: ToastController, private loadingController: LoadingController,
+        private camera: Camera, private placesService: PlacesService) { }
 
     onOpenMap() {
         const modal = this.modalController.create("SetLocationPage", { location: this.location, isSet: this.locationIsSet });
@@ -58,8 +61,30 @@ export class AddPlacePage {
             });
     }
 
+    onTakePhoto() {
+        this.camera.getPicture({
+            encodingType: this.camera.EncodingType.JPEG,
+            correctOrientation: true
+        })
+            .then(
+            imageData => {
+                this.imgUrl = imageData;
+            })
+            .catch(
+              error => {
+                console.log(error);
+            });
+    }
+
     onSubmit(form: NgForm) {
-        console.log(form);
+        this.placesService.addPlace(form.value.title, form.value.description, this.location, this.imgUrl);
+        this.location = {
+            lat: 40.7624324,
+            lng: -73.9759827
+        };
+        form.reset();
+        this.imgUrl = "";
+        this.locationIsSet = false;
     }
 
 }
