@@ -17,7 +17,14 @@ import { MyApp } from './app.component';
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp),
+    IonicModule.forRoot(MyApp, {
+        pageTransition: "wp-transition",
+        platform: {
+            ios: {
+                pageTransition: "ios-transition"
+            }
+        }
+    }),
     AgmCoreModule.forRoot({ apiKey: "AIzaSyDz3Jz4nZYT5BZLU8WiQOC4fOhI3Dl9Om4" }),
     IonicStorageModule.forRoot()
   ],

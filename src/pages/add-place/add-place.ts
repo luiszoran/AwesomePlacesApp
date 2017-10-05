@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, ModalController, ToastController, LoadingController } from 'ionic-angular';
+import { IonicPage, ModalController, ToastController, LoadingController, ViewController } from 'ionic-angular';
 import { NgForm } from "@angular/forms";
 import { Location } from "../../models/location";
 import { Geolocation } from '@ionic-native/geolocation';
@@ -25,7 +25,12 @@ export class AddPlacePage {
 
     constructor(private modalController: ModalController, private geolocation: Geolocation,
         private toastController: ToastController, private loadingController: LoadingController,
-        private camera: Camera, private file: File, private placesService: PlacesService) { }
+        private camera: Camera, private file: File, private placesService: PlacesService,
+        private viewController: ViewController) { }
+
+    ionViewWillEnter() {
+        this.viewController.setBackButtonText("Places");
+    }
 
     onOpenMap() {
         const modal = this.modalController.create("SetLocationPage", { location: this.location, isSet: this.locationIsSet });
